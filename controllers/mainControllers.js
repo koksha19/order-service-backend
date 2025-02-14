@@ -1,23 +1,9 @@
+const Product = require('../models/Product');
 const handleError = require('../util/handleError');
 
 const getProducts = async (req, res, next) => {
   try {
-    const products = [
-      {
-        _id: 'lsdjslkfjas',
-        title: 'Guitar 1',
-        price: 2000,
-        delivery: ['Standard', 'Express'],
-        description: 'A great guitar',
-      },
-      {
-        _id: 'lsdjslkfjas',
-        title: 'Guitar 1',
-        price: 2000,
-        delivery: ['Standard', 'Express'],
-        description: 'A great guitar',
-      },
-    ];
+    const products = await Product.find();
     res
       .status(200)
       .json({ message: 'Fetched products successfully', products: products });
