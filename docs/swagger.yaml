@@ -11,6 +11,8 @@ servers:
 paths:
   /products:
     get:
+      tags:
+        - main
       summary: Returns a list of products
       responses:
         "200":
@@ -25,6 +27,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - admin
+      summary: Add a new product
+      description: Add a new pet to the store
+      requestBody:
+        description: Create a new product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        "201":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid input
+        "422":
+          description: Validation exception
 
 
 components:

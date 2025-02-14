@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const connectDb = require('./config/connectDb');
 const setupSwagger = require('./docs/swagger');
 const mainRoutes = require('./routes/mainRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -23,6 +24,15 @@ app.use((req, res, next) => {
 });
 
 app.use(mainRoutes);
+app.use(adminRoutes);
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({ message: message, statusCode: status, data: data });
+});
 
 mongoose.connection.once('open', () => {
   console.log('Connected to the database successfully');
