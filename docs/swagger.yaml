@@ -18,9 +18,13 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/Products'
+        "default":
+          description: Error fetching products happened
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 
 components:
@@ -43,3 +47,16 @@ components:
         description:
           type: string
           example: A great guitar
+    Products:
+      type: array
+      items:
+        $ref: '#/components/schemas/Product'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Some Error
+        statusCode:
+          type: number
+          example: 404
