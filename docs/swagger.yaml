@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: Order automation API
+  description: This is an API which was creaed as a project at TechMagic academy.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Server which hosts this API
+
+paths:
+  /products:
+    get:
+      summary: Returns a list of products
+      responses:
+        "200":
+          description: A JSON array of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: kljw3l2fsdof993j3
+        title:
+          type: string
+          example: Guitar
+        price:
+          type: number
+          example: 1000
+        delivery:
+          type: array
+          example: ['Standard', 'Express']
+        description:
+          type: string
+          example: A great guitar
