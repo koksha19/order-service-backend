@@ -72,6 +72,9 @@ components:
         description:
           type: string
           example: A great guitar
+        image:
+          type: string
+          example: https://sc1.musik-produktiv.com/pic-010153533xl/suhr-custom-modern-3ts.jpg
     Products:
       type: array
       items:
