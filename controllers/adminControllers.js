@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 const handleError = require('../util/handleError');
 
 const createProduct = async (req, res, next) => {
-  const { title, price, delivery, description, image } = req.body;
+  const { title, price, delivery, description, image, stock } = req.body;
 
   try {
     const product = await Product.create({
@@ -11,6 +11,7 @@ const createProduct = async (req, res, next) => {
       delivery: delivery,
       description: description,
       image: image,
+      stock: stock,
     });
     return res
       .status(201)

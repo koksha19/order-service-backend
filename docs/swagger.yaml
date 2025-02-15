@@ -75,6 +75,9 @@ components:
         image:
           type: string
           example: https://sc1.musik-produktiv.com/pic-010153533xl/suhr-custom-modern-3ts.jpg
+        stock:
+          type: number
+          example: 5
     Products:
       type: array
       items:
