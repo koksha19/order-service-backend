@@ -13,8 +13,11 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-connectDb();
-setupSwagger(app);
+const MIME_TYPES = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+};
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,8 +28,18 @@ const storage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  if (!MIME_TYPES[file.mimetype]) {
+    return cb(new Error('Invalid file type. Allowed: PNG, JPG'), false);
+  }
+  cb(null, true);
+};
+
+connectDb();
+setupSwagger(app);
+
 app.use(express.json());
-app.use(multer({ storage: storage }).single('image'));
+app.use(multer({ storage: storage, fileFilter: fileFilter }).single('image'));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 app.use((req, res, next) => {
