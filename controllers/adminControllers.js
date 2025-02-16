@@ -2,16 +2,18 @@ const Product = require('../models/Product');
 const handleError = require('../util/handleError');
 
 const createProduct = async (req, res, next) => {
-  const { title, price, delivery, description, image, stock } = req.body;
+  const { title, price, delivery, description, stock } = req.body;
+
+  const imageUrl = req.protocol + '://' + req.get('host');
 
   try {
     const product = await Product.create({
       title: title,
       price: price,
-      delivery: delivery,
+      delivery: JSON.parse(delivery),
       description: description,
-      image: image,
       stock: stock,
+      image: imageUrl + '/images/' + req.file.filename,
     });
     return res
       .status(201)
