@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const Customer = require('../models/Customer');
 const handleError = require('../util/handleError');
@@ -42,4 +43,40 @@ const signUp = async (req, res, next) => {
   }
 };
 
-module.exports = { signUp };
+const logIn = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const customer = await Customer.findOne({ email: email }).exec();
+    if (!customer) {
+      const error = new Error('No user with such email found');
+      error.statusCode = 401;
+      return next(error);
+    }
+    const match = await bcrypt.compare(password, customer.password);
+    if (!match) {
+      const error = new Error('Password is incorrect');
+      error.statusCode = 401;
+      return next(error);
+    }
+    const token = jwt.sign(
+      {
+        customerId: customer._id.toString(),
+        email: customer.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+    res
+      .status(200)
+      .json({
+        message: 'Logged in successfully',
+        token: token,
+        customerId: customer._id.toString(),
+      });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
+module.exports = { signUp, logIn };
