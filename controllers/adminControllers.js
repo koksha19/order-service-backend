@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const Product = require('../models/Product');
 const handleError = require('../util/handleError');
 
@@ -23,4 +25,29 @@ const createProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct };
+const deleteProduct = async (req, res, next) => {
+  const productId = req.params.id;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      const error = new Error('Failed to delete post with id ' + productId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const imagePath = product.image.split('/')[4];
+
+    await fs.unlink(`./public/images/${imagePath}`, (err) => {
+      if (err) console.error(err);
+      console.log('Deleted image');
+    });
+
+    await Product.deleteOne({ _id: productId });
+    res.status(200).json({ message: 'Deleted post successfully' });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
+module.exports = { createProduct, deleteProduct };

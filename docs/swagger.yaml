@@ -31,7 +31,7 @@ paths:
       tags:
         - admin
       summary: Add a new product
-      description: Add a new pet to the store
+      description: Add a new product to the store
       requestBody:
         description: Create a new product
         content:
