@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const adminControllers = require('../controllers/adminControllers');
+const isAuthenticated = require('../middleware/isAuth');
 
-router.post('/products', adminControllers.createProduct);
-router.put('/products/:id', adminControllers.updateProduct);
-router.delete('/products/:id', adminControllers.deleteProduct);
+router.post('/products', isAuthenticated, adminControllers.createProduct);
+router.put('/products/:id', isAuthenticated, adminControllers.updateProduct);
+router.delete('/products/:id', isAuthenticated, adminControllers.deleteProduct);
 
 module.exports = router;
