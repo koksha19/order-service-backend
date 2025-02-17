@@ -25,6 +25,45 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+const updateProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  const { title, price, delivery, description, stock } = req.body;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      const error = new Error('No such post');
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (req.file) {
+      const imagePath = product.image.split('/')[4];
+      await fs.unlink(`./public/images/${imagePath}`, (err) => {
+        if (err) console.error(err);
+        console.log('Deleted image');
+      });
+    }
+
+    const imageUrl = req.protocol + '://' + req.get('host');
+
+    product.title = title;
+    product.price = price;
+    product.delivery = JSON.parse(delivery);
+    product.description = description;
+    product.stock = stock;
+    product.image = imageUrl + '/images/' + req.file.filename;
+    const updatedPost = await product.save();
+
+    res.status(200).json({
+      message: 'Updated post successfully',
+      post: updatedPost,
+    });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
 const deleteProduct = async (req, res, next) => {
   const productId = req.params.id;
 
@@ -50,4 +89,4 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct, deleteProduct };
+module.exports = { createProduct, updateProduct, deleteProduct };
