@@ -8,6 +8,7 @@ const connectDb = require('./config/connectDb');
 const setupSwagger = require('./docs/swagger');
 const mainRoutes = require('./routes/mainRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use((req, res, next) => {
 
 app.use(mainRoutes);
 app.use(adminRoutes);
+app.use(authRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);
