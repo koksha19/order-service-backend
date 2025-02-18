@@ -67,13 +67,12 @@ const logIn = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    res
-      .status(200)
-      .json({
-        message: 'Logged in successfully',
-        token: token,
-        customerId: customer._id.toString(),
-      });
+    res.status(200).json({
+      message: 'Logged in successfully',
+      token: token,
+      expiresIn: 3600,
+      customerId: customer._id.toString(),
+    });
   } catch (error) {
     handleError(error, next);
   }
