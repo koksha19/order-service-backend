@@ -34,6 +34,36 @@ const customerSchema = new Schema({
     },
     Admin: Number,
   },
+  cart: {
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        delivery: {
+          type: Array,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+  },
 });
+
+customerSchema.methods.addToCart = function (product, quantity) {
+  const id = product._id;
+  const productIndex = this.cart.items.findIndex(
+    (item) => item.productId.toString() === id.toString()
+  );
+
+  this.cart.items[productIndex].quantity += quantity;
+
+  return this.save();
+};
 
 module.exports = mongoose.model('Customer', customerSchema);
