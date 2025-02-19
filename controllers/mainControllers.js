@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Customer = require('../models/Customer');
 const handleError = require('../util/handleError');
 
 const getProducts = async (req, res, next) => {
@@ -18,12 +19,12 @@ const getProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(productId);
     if (!product) {
-      const error = new Error('Failed to find post with id ' + product);
+      const error = new Error('Failed to find product with id ' + product);
       error.statusCode = 404;
       return next(error);
     }
     res.status(200).json({
-      message: 'Fetched post successfully',
+      message: 'Fetched product successfully',
       product: product,
     });
   } catch (error) {
@@ -31,4 +32,39 @@ const getProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { getProducts, getProduct };
+const addToCart = async (req, res, next) => {
+  const { product, quantity, delivery, price } = req.body;
+  const productId = product._id;
+  const customerId = req.customerId;
+
+  try {
+    const product = await Product.findById(productId);
+    const customer = await Customer.findById(customerId);
+
+    if (!product) {
+      const error = new Error('Failed to find product with id ' + productId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (!customer) {
+      const error = new Error('Failed to find customer with id ' + customerId);
+      error.statusCode = 404;
+      return next(error);
+    }
+    customer.addToCart(product, delivery, quantity, price);
+    res.status(200).json({
+      message: 'Added product to cart',
+      info: {
+        product: product,
+        delivery: delivery,
+        quantity: quantity,
+        price: price,
+      },
+    });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
+module.exports = { getProducts, getProduct, addToCart };

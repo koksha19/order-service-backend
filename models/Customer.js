@@ -43,10 +43,14 @@ const customerSchema = new Schema({
           required: true,
         },
         delivery: {
-          type: Array,
+          type: Object,
           required: true,
         },
         quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
           type: Number,
           required: true,
         },
@@ -55,13 +59,27 @@ const customerSchema = new Schema({
   },
 });
 
-customerSchema.methods.addToCart = function (product, quantity) {
+customerSchema.methods.addToCart = function (
+  product,
+  delivery,
+  quantity,
+  price
+) {
   const id = product._id;
   const productIndex = this.cart.items.findIndex(
     (item) => item.productId.toString() === id.toString()
   );
 
-  this.cart.items[productIndex].quantity += quantity;
+  if (productIndex >= 0) {
+    this.cart.items[productIndex].quantity += quantity;
+  } else {
+    this.cart.items.push({
+      productId: id,
+      delivery: delivery,
+      quantity: quantity,
+      price: price,
+    });
+  }
 
   return this.save();
 };
