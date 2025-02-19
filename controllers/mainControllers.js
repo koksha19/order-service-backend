@@ -32,6 +32,35 @@ const getProduct = async (req, res, next) => {
   }
 };
 
+const getCart = async (req, res, next) => {
+  const customerId = req.customerId;
+
+  try {
+    const customer = await Customer.findById(customerId).populate(
+      'cart.items.productId'
+    );
+
+    if (!customer) {
+      const error = new Error('No customer found with id:' + productId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const cartItems = customer.cart.items.map((item) => ({
+      product: item.productId,
+      delivery: item.delivery,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    res
+      .status(200)
+      .json({ message: 'Fetched cart successfully', items: cartItems });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
 const addToCart = async (req, res, next) => {
   const { product, quantity, delivery, price } = req.body;
   const productId = product._id;
@@ -67,4 +96,4 @@ const addToCart = async (req, res, next) => {
   }
 };
 
-module.exports = { getProducts, getProduct, addToCart };
+module.exports = { getProducts, getProduct, getCart, addToCart };
