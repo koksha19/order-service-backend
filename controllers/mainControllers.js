@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
+const Order = require('../models/Order');
 const handleError = require('../util/handleError');
 
 const getProducts = async (req, res, next) => {
@@ -125,10 +126,41 @@ const removeFromCart = async (req, res, next) => {
   }
 };
 
+const createOrder = async (req, res, next) => {
+  const customerId = req.customerId;
+
+  try {
+    const customer = await Customer.findById(customerId)
+      .populate('cart.items.productId')
+      .exec();
+
+    const products = customer.cart.items.map((product) => {
+      return {
+        product: { ...product.productId._doc },
+        quantity: product.quantity,
+        delivery: product.delivery,
+      };
+    });
+
+    const order = await Order.create({
+      customer: customer,
+      products: products,
+      date: new Date().toISOString(),
+    });
+
+    res
+      .status(201)
+      .json({ message: 'Created order successfully', order: order });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
 module.exports = {
   getProducts,
   getProduct,
   getCart,
   addToCart,
   removeFromCart,
+  createOrder,
 };
