@@ -84,4 +84,15 @@ customerSchema.methods.addToCart = function (
   return this.save();
 };
 
+customerSchema.methods.removeFromCart = function (product) {
+  const id = product._id;
+
+  const productIndex = this.cart.items.findIndex(
+    (item) => item.productId.toString() === id.toString()
+  );
+
+  if (productIndex >= -1) this.cart.items.splice(productIndex, 1);
+  return this.save();
+};
+
 module.exports = mongoose.model('Customer', customerSchema);

@@ -96,4 +96,39 @@ const addToCart = async (req, res, next) => {
   }
 };
 
-module.exports = { getProducts, getProduct, getCart, addToCart };
+const removeFromCart = async (req, res, next) => {
+  const productId = req.params.productId;
+  const customerId = req.customerId;
+
+  try {
+    const product = await Product.findById(productId);
+    const customer = await Customer.findById(customerId);
+
+    if (!product) {
+      const error = new Error('Failed to find product with id ' + productId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (!customer) {
+      const error = new Error('Failed to find customer with id ' + customerId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    await customer.removeFromCart(product);
+    res
+      .status(200)
+      .json({ message: 'Removed product from cart', productId: productId });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
+module.exports = {
+  getProducts,
+  getProduct,
+  getCart,
+  addToCart,
+  removeFromCart,
+};
