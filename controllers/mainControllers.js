@@ -162,8 +162,10 @@ const createOrder = async (req, res, next) => {
     const order = await Order.create({
       customer: customer,
       products: products,
-      date: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
     });
+
+    await customer.clearCart();
 
     res
       .status(201)

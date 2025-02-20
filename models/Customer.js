@@ -95,4 +95,9 @@ customerSchema.methods.removeFromCart = function (product) {
   return this.save();
 };
 
+customerSchema.methods.clearCart = function () {
+  this.cart.items = [];
+  return this.save();
+};
+
 module.exports = mongoose.model('Customer', customerSchema);
