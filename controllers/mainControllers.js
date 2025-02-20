@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
@@ -126,6 +128,21 @@ const removeFromCart = async (req, res, next) => {
   }
 };
 
+const getOrders = async (req, res, next) => {
+  const customerId = req.customerId;
+
+  try {
+    const orders = await Order.find({
+      'customer._id': new mongoose.Types.ObjectId(customerId),
+    });
+    res
+      .status(200)
+      .json({ message: 'Fetched orders successfully', orders: orders });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
 const createOrder = async (req, res, next) => {
   const customerId = req.customerId;
 
@@ -162,5 +179,6 @@ module.exports = {
   getCart,
   addToCart,
   removeFromCart,
+  getOrders,
   createOrder,
 };
