@@ -63,6 +63,7 @@ const logIn = async (req, res, next) => {
       {
         customerId: customer._id.toString(),
         email: customer.email,
+        roles: customer.roles,
       },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
@@ -72,6 +73,7 @@ const logIn = async (req, res, next) => {
       token: token,
       expiresIn: 3600,
       customerId: customer._id.toString(),
+      roles: customer.roles,
     });
   } catch (error) {
     handleError(error, next);

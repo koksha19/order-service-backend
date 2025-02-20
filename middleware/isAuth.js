@@ -12,6 +12,7 @@ const isAuth = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     req.customerId = decodedToken.customerId;
+    req.roles = decodedToken.roles;
     next();
   } catch (error) {
     handleError(error, next);
