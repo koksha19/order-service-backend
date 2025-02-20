@@ -2,6 +2,8 @@ const fs = require('fs');
 
 const Product = require('../models/Product');
 const handleError = require('../util/handleError');
+const Order = require('../models/Order');
+const mongoose = require('mongoose');
 
 const createProduct = async (req, res, next) => {
   const { title, price, delivery, description, stock } = req.body;
@@ -89,4 +91,15 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { createProduct, updateProduct, deleteProduct };
+const getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find();
+    res
+      .status(200)
+      .json({ message: 'Fetched orders successfully', orders: orders });
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
+module.exports = { createProduct, updateProduct, deleteProduct, getOrders };

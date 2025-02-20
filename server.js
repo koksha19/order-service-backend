@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 });
 
 app.use(mainRoutes);
-app.use(adminRoutes);
+app.use('/admin', adminRoutes);
 app.use(authRoutes);
 
 app.use((error, req, res, next) => {
