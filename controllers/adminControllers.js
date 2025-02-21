@@ -3,7 +3,6 @@ const fs = require('fs');
 const Product = require('../models/Product');
 const handleError = require('../util/handleError');
 const Order = require('../models/Order');
-const mongoose = require('mongoose');
 
 const createProduct = async (req, res, next) => {
   const { title, price, delivery, description, stock } = req.body;
@@ -30,8 +29,15 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   const productId = req.params.id;
   const { title, price, delivery, description, stock } = req.body;
+  console.log(req.body);
 
   try {
+    if (!title || !price || !delivery || !description || !stock) {
+      const error = new Error('All fields have to be filled');
+      error.statusCode = 400;
+      return next(error);
+    }
+
     const product = await Product.findById(productId);
     if (!product) {
       const error = new Error('No such post');
@@ -94,6 +100,13 @@ const deleteProduct = async (req, res, next) => {
 const getOrders = async (req, res, next) => {
   try {
     const orders = await Order.find();
+
+    if (!orders) {
+      const error = new Error('Failed to fetch orders');
+      error.statusCode = 404;
+      return next(error);
+    }
+
     res
       .status(200)
       .json({ message: 'Fetched orders successfully', orders: orders });
