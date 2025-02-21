@@ -6,8 +6,14 @@ const Order = require('../models/Order');
 const handleError = require('../util/handleError');
 
 const getProducts = async (req, res, next) => {
+  const { pagesize, page } = req.query;
   try {
-    const products = await Product.find();
+    let products;
+    if (pagesize && page) {
+      products = await Product.find()
+        .skip((page - 1) * pagesize)
+        .limit(pagesize);
+    }
     res
       .status(200)
       .json({ message: 'Fetched products successfully', products: products });
