@@ -16,6 +16,14 @@ const signUp = async (req, res, next) => {
   } = req.body;
 
   try {
+    const existingCustomer = await Customer.find({ email: email });
+
+    if (existingCustomer) {
+      const error = new Error('Customer with such email already exists');
+      error.statusCode = 400;
+      return next(error);
+    }
+
     if (password !== confPassword) {
       const error = new Error('Passwords do not match');
       error.statusCode = 400;
