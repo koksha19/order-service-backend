@@ -14,9 +14,14 @@ const getProducts = async (req, res, next) => {
         .skip((page - 1) * pagesize)
         .limit(pagesize);
     }
+    const productCount = await Product.countDocuments();
     res
       .status(200)
-      .json({ message: 'Fetched products successfully', products: products });
+      .json({
+        message: 'Fetched products successfully',
+        products: products,
+        productCount: productCount,
+      });
   } catch (error) {
     handleError(error, next);
   }
