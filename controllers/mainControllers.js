@@ -15,13 +15,11 @@ const getProducts = async (req, res, next) => {
         .limit(pagesize);
     }
     const productCount = await Product.countDocuments();
-    res
-      .status(200)
-      .json({
-        message: 'Fetched products successfully',
-        products: products,
-        productCount: productCount,
-      });
+    res.status(200).json({
+      message: 'Fetched products successfully',
+      products: products,
+      productCount: productCount,
+    });
   } catch (error) {
     handleError(error, next);
   }
@@ -33,7 +31,7 @@ const getProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(productId);
     if (!product) {
-      const error = new Error('Failed to find product with id ' + product);
+      const error = new Error('Failed to find product with id ' + productId);
       error.statusCode = 404;
       return next(error);
     }
@@ -55,7 +53,7 @@ const getCart = async (req, res, next) => {
     );
 
     if (!customer) {
-      const error = new Error('No customer found with id:' + productId);
+      const error = new Error('No customer found with id:' + customerId);
       error.statusCode = 404;
       return next(error);
     }
