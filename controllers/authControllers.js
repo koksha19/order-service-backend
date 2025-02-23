@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const Customer = require('../models/Customer');
 const handleError = require('../util/handleError');
+const checkValidity = require('../util/checkValidity');
+const { validationResult } = require('express-validator');
 
 const signUp = async (req, res, next) => {
   const {
@@ -14,9 +16,12 @@ const signUp = async (req, res, next) => {
     password,
     confPassword,
   } = req.body;
+  const errors = validationResult(req);
 
   try {
     const existingCustomer = await Customer.find({ email: email });
+
+    checkValidity(errors, next);
 
     if (existingCustomer) {
       const error = new Error('Customer with such email already exists');
