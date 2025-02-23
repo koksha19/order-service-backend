@@ -195,6 +195,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/500Error'
 
+  /cart/{productId}:
+    put:
+      tags:
+        - cart
+      summary: Remove product from cart
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Removed product from cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Removed product from cart
+                  productId:
+                    type: string
+                    example: 67b74147330e23ad4c51279a
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "404":
+          description: Failed to find product or customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+
 
 components:
   securitySchemes:
