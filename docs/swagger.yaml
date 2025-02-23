@@ -320,3 +320,64 @@ components:
         checked:
           type: boolean
           example: true
+    Customer:
+      type: object
+      properties:
+        customer:
+          type: string
+          example: Lev & Co
+        email:
+          type: string
+          example: test@gmail.com
+        contactName:
+          type: string
+          example: Name
+        address:
+          type: string
+          example: Khreshchatyk street 25, Kyiv, 12345
+        phone:
+          type: string
+          example: 123-123-1231
+        password:
+          type: string
+        roles:
+          type: object
+        cart:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CartItem'
+    CartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: 67b31e7a1dd7aaecbb98e6fe
+        delivery:
+          $ref: '#/components/schemas/Delivery'
+        quantity:
+          type: integer
+          example: 5
+        price:
+          type: number
+          example: 1000
+    Order:
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+        products:
+          type: object
+          properties:
+            product:
+              $ref: '#/components/schemas/Product'
+            delivery:
+              $ref: '#/components/schemas/Delivery'
+            quantity:
+              type: integer
+              example: 5
+        date:
+          type: string
+          example: 2025-02-20T00:00:00.000+00:00
