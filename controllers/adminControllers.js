@@ -2,14 +2,25 @@ const fs = require('fs');
 
 const Product = require('../models/Product');
 const handleError = require('../util/handleError');
+const checkValidity = require('../util/checkValidity');
 const Order = require('../models/Order');
+const { validationResult } = require('express-validator');
 
 const createProduct = async (req, res, next) => {
   const { title, price, delivery, description, stock } = req.body;
+  const errors = validationResult(req);
 
   const imageUrl = req.protocol + '://' + req.get('host');
 
   try {
+    if (!title || !price || !delivery || !description || !stock) {
+      const error = new Error('All fields have to be filled');
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    checkValidity(errors, next);
+
     const product = await Product.create({
       title: title,
       price: price,
@@ -29,7 +40,7 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   const productId = req.params.id;
   const { title, price, delivery, description, stock } = req.body;
-  console.log(req.body);
+  const errors = validationResult(req);
 
   try {
     if (!title || !price || !delivery || !description || !stock) {
@@ -37,6 +48,8 @@ const updateProduct = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
+
+    checkValidity(errors, next);
 
     const product = await Product.findById(productId);
     if (!product) {

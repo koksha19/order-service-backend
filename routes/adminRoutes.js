@@ -1,20 +1,37 @@
 const express = require('express');
 const router = express.Router();
 
+const { check } = require('express-validator');
+
 const adminControllers = require('../controllers/adminControllers');
 const isAuthenticated = require('../middleware/isAuth');
 const isAdmin = require('../middleware/isAdmin');
+
+const validation = [
+  check('title', 'Title has to be a string of at least 3 characters')
+    .isString()
+    .isLength({ min: 3, max: 50 })
+    .trim(),
+  check('price', 'Price has to be a number and at least 1').isNumeric(),
+  check('description', 'Description has to contain at least 50 characters')
+    .isAlphanumeric()
+    .isLength({ min: 50 })
+    .trim(),
+  check('stock', 'Stock has to be a number and at least 1').isNumeric(),
+];
 
 router.post(
   '/products',
   isAuthenticated,
   isAdmin,
+  validation,
   adminControllers.createProduct
 );
 router.put(
   '/products/:id',
   isAuthenticated,
   isAdmin,
+  validation,
   adminControllers.updateProduct
 );
 router.delete(
