@@ -487,12 +487,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/403Error'
+        "404":
+          description: Can not find product with this id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
         "422":
           description: Validation error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/422Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+    delete:
+      summary: Delete a product
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - admin
+      description: Deletes a product by ID. Requires admin privileges.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "65b3c9fd5e4d1b0024a2e65a"
+      responses:
+        "200":
+          description: Deleted product successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deleted product successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+        "404":
+          description: Can not find product with this id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
         "500":
           description: Server side error
           content:
