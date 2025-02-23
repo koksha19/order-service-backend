@@ -554,6 +554,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
+  /admin/orders:
+    get:
+      summary: Get all orders
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - admin
+      description: Fetches all orders. Requires admin privileges.
+      responses:
+        "200":
+          description: Fetched orders successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Fetched orders successfully
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+        "404":
+          description: Can not find orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 components:
   securitySchemes:
