@@ -5,7 +5,7 @@ const isAuth = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      const error = new Error('Not authorized');
+      const error = new Error('Unauthorized');
       error.statusCode = 401;
       next(error);
     }

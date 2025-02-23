@@ -46,7 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/500Error'
 
   /products/{productId}:
     get:
@@ -74,12 +74,65 @@ paths:
                     $ref: '#/components/schemas/Products'
         "404":
           description: Failed to find product with this id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
         "500":
           description: Server side error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/500Error'
+  /cart:
+    get:
+      tags:
+        - cart
+      summary: Get customer's cart
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: Fetched cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          $ref: '#/components/schemas/Product'
+                        delivery:
+                          $ref: '#/components/schemas/Delivery'
+                        quantity:
+                          type: integer
+                        price:
+                          type: number
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "404":
+          description: Failed to find product with this id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+
 
 components:
   securitySchemes:
@@ -117,7 +170,7 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Product'
-    Error:
+    500Error:
       type: object
       properties:
         message:
@@ -129,6 +182,24 @@ components:
         data:
           type: object
           example: { msg: Message, param: param.name.with.index, value: param value }
+    404Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 404 error
+        statusCode:
+          type: number
+          example: 404
+    401Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 401 error
+        statusCode:
+          type: number
+          example: 401
     Delivery:
       type: object
       properties:
