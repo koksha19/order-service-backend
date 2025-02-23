@@ -132,6 +132,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
+    post:
+      tags:
+        - cart
+      summary: Add product to cart
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  $ref: '#/components/schemas/Product'
+                quantity:
+                  type: integer
+                delivery:
+                  $ref: '#/components/schemas/Delivery'
+                price:
+                  type: number
+      responses:
+        "200":
+          description: Added product to cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  info:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+                      delivery:
+                        $ref: '#/components/schemas/Delivery'
+                      quantity:
+                        type: integer
+                        example: 5
+                      price:
+                        type: number
+                        example: 1000
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "404":
+          description: Failed to find product or customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 
 components:
