@@ -1,4 +1,7 @@
+const path = require('path');
+const fs = require('fs');
 const mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
 
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
@@ -184,6 +187,70 @@ const createOrder = async (req, res, next) => {
   }
 };
 
+const getInvoice = async (req, res, next) => {
+  const customerId = req.customerId;
+  const orderId = req.params.orderId;
+
+  try {
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      const error = new Error('Failed to find order with id ' + orderId);
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (
+      order.customer._id.toString() === customerId ||
+      Object.keys(req.roles).includes('Admin')
+    ) {
+      const invoiceName = `invoice-${orderId}.pdf`;
+      const invoicePath = path.join('invoices', invoiceName);
+
+      const pdfDoc = new PDFDocument();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename=${invoiceName}`);
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      let totalCost = 0;
+      pdfDoc.fontSize(27).text(`Order - ${order._id}`, {
+        underline: true,
+      });
+      pdfDoc
+        .fontSize(16)
+        .text(
+          '---------------------------------------------------------------------------------------'
+        );
+      order.products.forEach((product) => {
+        pdfDoc.text(
+          '       • ' +
+            product.product.title +
+            ':                                                           ' +
+            product.quantity +
+            ' × $' +
+            product.product.price +
+            ' + $' +
+            product.delivery.price
+        );
+        totalCost +=
+          product.product.price * product.quantity + product.delivery.price;
+      });
+      pdfDoc.text(
+        '---------------------------------------------------------------------------------------'
+      );
+      pdfDoc.fontSize(25).text('Total cost: $' + totalCost);
+      pdfDoc.end();
+    } else {
+      const error = new Error('Unauthorized');
+      error.statusCode = 401;
+      return next(error);
+    }
+  } catch (error) {
+    handleError(error, next);
+  }
+};
+
 module.exports = {
   getProducts,
   getProduct,
@@ -192,4 +259,5 @@ module.exports = {
   removeFromCart,
   getOrders,
   createOrder,
+  getInvoice,
 };
