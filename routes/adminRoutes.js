@@ -13,10 +13,10 @@ const validation = [
     .isLength({ min: 3, max: 50 })
     .trim(),
   check('price', 'Price has to be a number and at least 1').isNumeric(),
-  check('description', 'Description has to contain at least 50 characters')
-    .isAlphanumeric()
-    .isLength({ min: 50 })
-    .trim(),
+  check(
+    'description',
+    'Description has to contain at least 50 characters'
+  ).isLength({ min: 30 }),
   check('stock', 'Stock has to be a number and at least 1').isNumeric(),
 ];
 
@@ -28,7 +28,7 @@ router.post(
   adminControllers.createProduct
 );
 router.put(
-  '/products/:id',
+  '/products/:productId',
   isAuthenticated,
   isAdmin,
   validation,

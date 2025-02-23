@@ -38,7 +38,7 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  const productId = req.params.id;
+  const productId = req.params.productId;
   const { title, price, delivery, description, stock } = req.body;
   const errors = validationResult(req);
 
@@ -74,11 +74,11 @@ const updateProduct = async (req, res, next) => {
     product.description = description;
     product.stock = stock;
     product.image = imageUrl + '/images/' + req.file.filename;
-    const updatedPost = await product.save();
+    const updatedProduct = await product.save();
 
     res.status(200).json({
       message: 'Updated post successfully',
-      post: updatedPost,
+      product: updatedProduct,
     });
   } catch (error) {
     handleError(error, next);

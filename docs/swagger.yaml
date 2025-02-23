@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Order automation API
-  description: This is an API which was creaed as a project at TechMagic academy.
+  description: This is an API which was created as a project at TechMagic academy.
   version: 1.0.0
 
 servers:
@@ -338,6 +338,167 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
+  /admin/products:
+    post:
+      summary: Create a new product
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - admin
+      description: Creates a new product. Requires admin privileges.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Guitar
+                price:
+                  type: number
+                  example: 1000
+                delivery:
+                  type: string
+                  example: '[{"name":"Standard","price":50,"checked":true}, 
+                    {"name":"Express","price":70,"checked":true}]'
+                description:
+                  type: string
+                  example: A great guitar
+                stock:
+                  type: number
+                  example: 5
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product created successfully
+                  product:
+                    $ref: "#/components/schemas/Product"
+        "400":
+          description: Wrong input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400Error'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+
+  /admin/products/{productId}:
+    put:
+      summary: Update an existing product
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - admin
+      description: Updates a product. Requires admin privileges.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "65b3c9fd5e4d1b0024a2e65a"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Guitar
+                price:
+                  type: number
+                  example: 1200
+                delivery:
+                  type: string
+                  example: '[{"name":"Overnight","price":100,"checked":true}]'
+                description:
+                  type: string
+                  example: Another guitar
+                stock:
+                  type: number
+                  example: 3
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Updated product successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Updated product successfully
+                  product:
+                    $ref: "#/components/schemas/Product"
+        "400":
+          description: Wrong input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400Error'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/403Error'
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 components:
   securitySchemes:
@@ -396,6 +557,15 @@ components:
         statusCode:
           type: number
           example: 404
+    403Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 403 error
+        statusCode:
+          type: number
+          example: 403
     401Error:
       type: object
       properties:
@@ -405,6 +575,24 @@ components:
         statusCode:
           type: number
           example: 401
+    400Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 400 error
+        statusCode:
+          type: number
+          example: 400
+    422Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Validation error
+        statusCode:
+          type: number
+          example: 422
     Delivery:
       type: object
       properties:
