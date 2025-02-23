@@ -13,46 +13,80 @@ paths:
     get:
       tags:
         - main
-      summary: Returns a list of products
+      summary: Get a list of products
+      parameters:
+        - name: pagesize
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
       responses:
         "200":
-          description: A JSON array of products
+          description: A list of products
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Products'
-        "default":
-          description: Error fetching products happened
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Fetched products successfully
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Products'
+                  productCount:
+                    type: integer
+                    example: 5
+        "500":
+          description: Sever side error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    post:
+
+  /products/{productId}:
+    get:
       tags:
-        - admin
-      summary: Add a new product
-      description: Add a new product to the store
-      requestBody:
-        description: Create a new product
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Product'
-        required: true
+        - main
+      summary: Get a single product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        "201":
-          description: Successful operation
+        "200":
+          description: Fetched product successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
-        "400":
-          description: Invalid input
-        "422":
-          description: Validation exception
-
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Fetched product successfully
+                  product:
+                    $ref: '#/components/schemas/Products'
+        "404":
+          description: Failed to find product with this id
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Product:
       type: object
@@ -68,7 +102,8 @@ components:
           example: 1000
         delivery:
           type: array
-          example: ['Standard', 'Express']
+          items:
+            $ref: '#/components/schemas/Delivery'
         description:
           type: string
           example: A great guitar
@@ -90,4 +125,19 @@ components:
           example: Some Error
         statusCode:
           type: number
-          example: 404
+          example: 500
+        data:
+          type: object
+          example: { msg: Message, param: param.name.with.index, value: param value }
+    Delivery:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Standard
+        price:
+          type: number
+          example: 50
+        checked:
+          type: boolean
+          example: true

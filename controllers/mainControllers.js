@@ -29,7 +29,7 @@ const getProducts = async (req, res, next) => {
 };
 
 const getProduct = async (req, res, next) => {
-  const productId = req.params.id;
+  const productId = req.params.productId;
 
   try {
     const product = await Product.findById(productId);
