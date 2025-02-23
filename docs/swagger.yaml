@@ -403,15 +403,19 @@ components:
         customer:
           $ref: '#/components/schemas/Customer'
         products:
-          type: object
-          properties:
-            product:
-              $ref: '#/components/schemas/Product'
-            delivery:
-              $ref: '#/components/schemas/Delivery'
-            quantity:
-              type: integer
-              example: 5
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderProduct'
         date:
           type: string
           example: 2025-02-20T00:00:00.000+00:00
+    OrderProduct:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        delivery:
+          $ref: '#/components/schemas/Delivery'
+        quantity:
+          type: integer
+          example: 5
