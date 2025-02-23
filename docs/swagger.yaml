@@ -601,6 +601,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
+  /signup:
+    post:
+      summary: Register a new customer
+      tags:
+        - authentication
+      description: Creates a new customer account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Customer"
+      responses:
+        "201":
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Created new customer successfully
+                  customer:
+                    $ref: "#/components/schemas/Customer"
+        "400":
+          description: Customer with such email already exists or passwords don't match
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400Error'
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+
+  /login:
+    post:
+      summary: Log in a customer
+      tags:
+        - authentication
+      description: Authenticates a customer and returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "test@gmail.com"
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged in successfully
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                  expiresIn:
+                    type: integer
+                    example: 3600
+                  customerId:
+                    type: string
+                    example: "65b3c9fd5e4d1b0024a2e65a"
+                  roles:
+                    type: object
+                    properties:
+                      User:
+                        type: integer
+                        example: 2001
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 components:
   securitySchemes:

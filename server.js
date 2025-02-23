@@ -37,7 +37,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 connectDb();
-setupSwagger(app);
+setupSwagger(app); // set up swagger docs on localhost:8080/api-docs
 
 app.use(express.json());
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('image'));
