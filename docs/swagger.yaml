@@ -305,6 +305,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
+  /orders/{orderId}:
+    get:
+      tags:
+        - orders
+      summary: Get an invoice for an order
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Invoice PDF
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 components:
   securitySchemes:
