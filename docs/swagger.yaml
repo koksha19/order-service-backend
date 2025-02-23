@@ -274,7 +274,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/500Error'
-
+    post:
+      tags:
+        - orders
+      summary: Create a new order
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "201":
+          description: Created order successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Created order successfully
+                  order:
+                    $ref: '#/components/schemas/Order'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+        "500":
+          description: Server side error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
 
 components:
   securitySchemes:
